@@ -1,0 +1,1469 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f1419;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.app-header {
+    background: #1e2328;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2f3136;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-left h1 {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #ff8c00; /* Turuncu */
+}
+
+.version {
+    background: #36393f;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    color: #b9bbbe;
+}
+
+.recording-indicator {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: #ed4245;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+.recording-indicator.active {
+    display: flex;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Panels */
+.left-panel, .right-panel {
+    width: 300px;
+    background: #2f3136;
+    border-right: 1px solid #202225;
+    overflow-y: auto;
+}
+
+.right-panel {
+    border-right: none;
+    border-left: 1px solid #202225;
+}
+
+.center-panel {
+    flex: 1;
+    background: #36393f;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-section {
+    padding: 15px;
+    border-bottom: 1px solid #202225;
+}
+
+.panel-section h3 {
+    color: #ff8c00; /* Turuncu */
+    margin-bottom: 15px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Kaynak Listesi */
+.add-source-btn {
+    width: 100%;
+    background: #ff8c00; /* Turuncu */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background 0.2s;
+}
+
+.add-source-btn:hover {
+    background: #e67e00; /* Koyu turuncu */
+}
+
+.sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.source-item {
+    background: #40444b;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.source-item:hover {
+    background: #484c52;
+}
+
+.source-item.active {
+    background: #ff8c00; /* Turuncu */
+}
+
+.source-item img {
+    width: 40px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+/* Mikrofon Kontrolleri */
+.mic-control {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mic-btn {
+    background: #40444b;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.mic-btn:hover {
+    background: #484c52;
+}
+
+.mic-btn i.fa-microphone {
+    color: #ff8c00; /* Turuncu */
+}
+
+.mic-btn i.fa-microphone-slash {
+    color: #ed4245;
+}
+
+.mic-status {
+    text-align: center;
+    padding: 5px;
+    border-radius: 4px;
+    background: #202225;
+    color: #ed4245;
+    font-size: 0.9em;
+}
+
+.mic-status.active {
+    color: #ff8c00; /* Turuncu */
+}
+
+/* Video Ayarları */
+.video-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    color: #b9bbbe;
+    font-weight: 500;
+}
+
+.settings-group label i {
+    color: #ff8c00; /* Turuncu */
+    width: 16px;
+    text-align: center;
+}
+
+.settings-select {
+    background: #40444b;
+    border: 1px solid #202225;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.settings-select:hover {
+    background: #484c52;
+    border-color: #ff8c00; /* Turuncu */
+}
+
+.settings-select:focus {
+    outline: none;
+    border-color: #ff8c00; /* Turuncu */
+    box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
+}
+
+.settings-info {
+    margin-top: 10px;
+}
+
+.info-card {
+    background: #40444b;
+    border-radius: 6px;
+    padding: 12px;
+    border-left: 3px solid #ff8c00; /* Turuncu */
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.85em;
+    color: #b9bbbe;
+    font-weight: 500;
+}
+
+.info-header i {
+    color: #ff8c00; /* Turuncu */
+}
+
+.info-content {
+    font-size: 0.9em;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Estimated Size Colors */
+#estimated-size {
+    background: linear-gradient(45deg, #ff8c00, #ffa500); /* Turuncu gradyan */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+/* Settings Icons Animation */
+.settings-group label i {
+    transition: transform 0.2s ease;
+}
+
+.settings-group:hover label i {
+    transform: scale(1.1);
+}
+
+/* Önizleme */
+.preview-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    background: #2f3136;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.preview-header {
+    background: #202225;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #40444b;
+}
+
+.preview-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    color: #b9bbbe;
+}
+
+.preview-info span {
+    color: #ff8c00; /* Turuncu */
+    font-weight: 500;
+}
+
+.preview-area {
+    flex: 1;
+    position: relative;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-placeholder {
+    text-align: center;
+    color: #72767d;
+}
+
+.preview-placeholder i {
+    font-size: 3em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+#preview-canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.preview-footer {
+    background: #202225;
+    padding: 8px 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8em;
+    color: #b9bbbe;
+}
+
+/* İstatistikler */
+.stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+}
+
+.stat-label {
+    color: #b9bbbe;
+}
+
+.stat-value {
+    color: #ff8c00; /* Turuncu */
+    font-weight: 600;
+}
+
+/* Alt Panel */
+.bottom-panel {
+    background: #2f3136;
+    padding: 15px 20px;
+    border-top: 1px solid #202225;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.control-section {
+    display: flex;
+    gap: 15px;
+}
+
+.control-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.record-btn {
+    background: #ed4245;
+    color: white;
+}
+
+.record-btn:hover:not(:disabled) {
+    background: #c73e41;
+}
+
+.stop-btn {
+    background: #72767d;
+    color: white;
+}
+
+.stop-btn:hover:not(:disabled) {
+    background: #5c6069;
+}
+
+.status-section {
+    display: flex;
+    gap: 20px;
+    font-size: 0.9em;
+    color: #b9bbbe;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #2f3136;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.save-modal-content {
+    max-width: 900px;
+    width: 95%;
+}
+
+.modal-header {
+    background: #202225;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #40444b;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #b9bbbe;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: #40444b;
+}
+
+.modal-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.source-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #40444b;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: #b9bbbe;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    color: #ff8c00; /* Turuncu */
+    border-bottom-color: #ff8c00; /* Turuncu */
+}
+
+.sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.source-grid-item {
+    background: #40444b;
+    border-radius: 6px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.source-grid-item:hover {
+    background: #484c52;
+}
+
+.source-grid-item.selected {
+    border-color: #ff8c00; /* Turuncu */
+    background: #36393f;
+}
+
+.source-grid-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.source-name {
+    font-weight: 500;
+    color: #ffffff;
+    text-align: center;
+}
+
+.modal-footer {
+    background: #202225;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #40444b;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: #ff8c00; /* Turuncu */
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #e67e00; /* Koyu turuncu */
+}
+
+.btn-primary:disabled {
+    background: #72767d;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #40444b;
+    color: #b9bbbe;
+}
+
+.btn-secondary:hover {
+    background: #484c52;
+}
+
+/* Video Player Styles */
+.video-preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.custom-video-player {
+    position: relative;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.preview-video {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    display: block;
+    background: #000;
+}
+
+.video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 20px 15px 15px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.custom-video-player:hover .video-controls {
+    transform: translateY(0);
+}
+
+.control-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+}
+
+.play-pause-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-pause-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.time-display {
+    font-size: 0.9em;
+    font-weight: 500;
+    min-width: 80px;
+    text-align: center;
+}
+
+.progress-container {
+    flex: 1;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.progress-bar {
+    position: relative;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #ff8c00; /* Turuncu */
+    width: 0%;
+    transition: width 0.1s ease;
+    border-radius: 2px;
+}
+
+.progress-handle {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 12px;
+    height: 12px;
+    background: #ff8c00; /* Turuncu */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    cursor: pointer;
+}
+
+.progress-container:hover .progress-handle {
+    opacity: 1;
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.volume-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.volume-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.volume-slider {
+    width: 60px;
+}
+
+.volume-slider input[type="range"] {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.volume-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #ff8c00; /* Turuncu */
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.fullscreen-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.video-overlay.show {
+    opacity: 1;
+}
+
+.play-overlay {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2em;
+    transition: transform 0.2s ease;
+}
+
+.play-overlay:hover {
+    transform: scale(1.1);
+}
+
+.video-info {
+    display: flex;
+    justify-content: space-around;
+    background: #40444b;
+    padding: 15px;
+    border-radius: 8px;
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #b9bbbe;
+    font-size: 0.9em;
+}
+
+.info-item i {
+    color: #ff8c00; /* Turuncu */
+    width: 16px;
+    text-align: center;
+}
+
+/* Settings Animation */
+.settings-select {
+    transition: all 0.3s ease;
+}
+
+.settings-select:hover {
+    transform: translateY(-1px);
+}
+
+.info-card {
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Quality Indicators */
+.settings-select option {
+    background: #40444b;
+    color: white;
+    padding: 8px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .left-panel, .right-panel {
+        width: 250px;
+    }
+    
+    .video-settings {
+        gap: 12px;
+    }
+    
+    .settings-select {
+        padding: 8px 10px;
+        font-size: 0.85em;
+    }
+    
+    .info-card {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 900px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .left-panel, .right-panel {
+        width: 100%;
+        height: 200px;
+    }
+    
+    .control-section {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .control-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .status-section {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .control-bar {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .progress-container {
+        order: -1;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .volume-container {
+        display: none;
+    }
+    
+    .video-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .video-settings {
+        gap: 10px;
+    }
+    
+    .settings-group label {
+        font-size: 0.85em;
+    }
+    
+    .preview-info {
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.8em;
+    }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2f3136;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #202225;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #40444b;
+}
+
+/* Loading Animation */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Video Loading States */
+.video-loading {
+    position: relative;
+}
+
+.video-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #ff8c00; /* Turuncu */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+/* Video Error State */
+.video-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background: #2f3136;
+    color: #ed4245;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.video-error i {
+    font-size: 3em;
+    opacity: 0.5;
+}
+
+
+/* Close button hover effect */
+.close-btn {
+    background: none;
+    border: none;
+    color: #b9bbbe;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-size: 1.1em;
+}
+
+.close-btn:hover {
+    background: #ed4245;
+    color: white;
+    transform: scale(1.1);
+}
+
+.close-btn:active {
+    transform: scale(0.95);
+}
+
+
+/* Mikrofon kontrol grubu stilleri */
+.mic-control-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Mikrofon ayarları butonu */
+.mic-settings-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #4f545c;
+    background: #2f3136;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #b9bbbe;
+    font-size: 12px;
+    padding: 0;
+}
+
+.mic-settings-btn:hover {
+    background: #36393f;
+    border-color: #6c7b7f;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.mic-settings-btn:active {
+    transform: translateY(0);
+    background: #2f3136;
+}
+
+.mic-settings-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Mikrofon ayarları modalı */
+#microphone-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    animation: fadeIn 0.2s ease;
+}
+
+#microphone-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.microphone-modal-content {
+    background: #36393f;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    border: 1px solid #42464d;
+    animation: slideInScale 0.3s ease;
+}
+
+.microphone-modal-content .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #42464d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.microphone-modal-content .modal-header h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.microphone-modal-content .modal-header h3 i {
+    color: #5865f2;
+}
+
+.microphone-modal-content .modal-body {
+    padding: 20px 24px;
+}
+
+.microphone-modal-content .modal-footer {
+    padding: 16px 24px 20px;
+    border-top: 1px solid #42464d;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* Mikrofon ayar grupları */
+.mic-setting-group {
+    margin-bottom: 20px;
+}
+
+.mic-setting-group label {
+    display: block;
+    color: #b9bbbe;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Mikrofon seçici */
+.mic-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: #2f3136;
+    border: 1px solid #4f545c;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.mic-select:focus {
+    border-color: #5865f2;
+    box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2);
+}
+
+.mic-select option {
+    background: #2f3136;
+    color: #ffffff;
+    padding: 8px;
+}
+
+/* Gain kontrol */
+.gain-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#mic-gain-slider {
+    flex: 1;
+    height: 6px;
+    background: #4f545c;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+#mic-gain-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #5865f2;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#mic-gain-slider::-webkit-slider-thumb:hover {
+    background: #4752c4;
+    transform: scale(1.1);
+}
+
+#mic-gain-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #5865f2;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+#mic-gain-slider::-moz-range-thumb:hover {
+    background: #4752c4;
+    transform: scale(1.1);
+}
+
+#gain-value {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Mikrofon test bölümü */
+.mic-test-section {
+    background: #2f3136;
+    border: 1px solid #4f545c;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 20px;
+}
+
+.mic-level-indicator {
+    width: 100%;
+    height: 8px;
+    background: #42464d;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.mic-level-bar {
+    height: 100%;
+    width: 0%;
+    background: #57f287;
+    border-radius: 4px;
+    transition: width 0.1s ease, background-color 0.2s ease;
+    position: relative;
+}
+
+.mic-level-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 1px;
+}
+
+/* Test mikrofon butonu */
+.test-mic-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background: #5865f2;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.test-mic-btn:hover {
+    background: #4752c4;
+    transform: translateY(-1px);
+}
+
+.test-mic-btn:active {
+    transform: translateY(0);
+}
+
+.test-mic-btn.testing {
+    background: #ed4245;
+}
+
+.test-mic-btn.testing:hover {
+    background: #c73e3f;
+}
+
+/* Modal butonları */
+.cancel-btn {
+    padding: 10px 20px;
+    background: transparent;
+    color: #b9bbbe;
+    border: 1px solid #4f545c;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+    background: #4f545c;
+    color: #ffffff;
+}
+
+.apply-btn {
+    padding: 10px 20px;
+    background: #57f287;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.apply-btn:hover {
+    background: #3ba55c;
+    transform: translateY(-1px);
+}
+
+.apply-btn:active {
+    transform: translateY(0);
+}
+
+/* Animasyonlar */
+@keyframes slideInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive tasarım */
+@media (max-width: 600px) {
+    .microphone-modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .microphone-modal-content .modal-header,
+    .microphone-modal-content .modal-body,
+    .microphone-modal-content .modal-footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    .gain-control {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    #gain-value {
+        text-align: left;
+    }
+}
+
+/* Kapalı durumda mikrofon ayarları butonu */
+.mic-settings-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Tooltip benzeri hover efekti */
+.mic-settings-btn:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #18191c;
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    margin-bottom: 4px;
+    z-index: 1000;
+    opacity: 0;
+    animation: tooltipFadeIn 0.2s ease forwards;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+
+/* Mikrofon modalı kapatma butonu */
+#close-mic-modal {
+    background: transparent;
+    border: none;
+    color: #b9bbbe;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+}
+
+#close-mic-modal:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+#close-mic-modal:active {
+    transform: scale(1);
+    background: rgba(255, 255, 255, 0.05);
+}

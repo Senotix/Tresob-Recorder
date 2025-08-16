@@ -1,0 +1,44 @@
+{
+  "name": "tiro-recorder",
+  "version": "1.0.0",
+  "description": "Ekran kaydedici",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build-win": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "recordrtc": "^5.6.2"
+  },
+  "build": {
+    "appId": "com.tirorecorder.app",
+    "productName": "Tiro Recorder",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "fileAssociations": [
+      {
+        "ext": "exe",
+        "icon": "icon.ico"
+      }
+    ]
+  }
+}

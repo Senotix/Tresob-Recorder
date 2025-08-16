@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tresob Recorder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <h1><i class="fas fa-video"></i> Tresob Recorder</h1>
+                <span id="version-info" class="version">v1.1.0</span>
+            </div>
+            <div class="header-right">
+                <div class="language-selector">
+                    <button class="lang-btn" id="lang-btn">
+                        <i class="fas fa-globe"></i>
+                        <span id="current-lang">EN</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="lang-dropdown" id="lang-dropdown">
+                        <button class="lang-option" data-lang="en">
+                            <img src="https://flagcdn.com/24x18/gb.png" alt="EN">
+                            <span>English</span>
+                        </button>
+                        <button class="lang-option" data-lang="tr">
+                            <img src="https://flagcdn.com/24x18/tr.png" alt="TR">
+                            <span>Türkçe</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="recording-indicator" id="recording-indicator">
+                    <i class="fas fa-circle"></i>
+                    <span data-i18n="recording">RECORDING</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="left-panel">
+                <div class="panel-section">
+                    <h3><i class="fas fa-desktop"></i> <span data-i18n="sources">Sources</span></h3>
+                    <button id="add-source-btn" class="add-source-btn">
+                        <i class="fas fa-plus"></i> <span data-i18n="addSource">Add Source</span>
+                    </button>
+                    <div id="sources-list" class="sources-list"></div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-microphone"></i> <span data-i18n="microphone">Microphone</span></h3>
+                    <!-- Mikrofon kontrol grubu - BURADA DEĞİŞİKLİK -->
+                    <div class="mic-control-group">
+                        <button id="mic-toggle-btn" class="mic-btn">
+                            <i class="fas fa-microphone-slash"></i>
+                            <span data-i18n="micOff">Microphone Off</span>
+                        </button>
+                        <div id="mic-status" class="mic-status" data-i18n="off">Off</div>
+                        <!-- Mikrofon ayarları butonu JavaScript tarafından otomatik eklenir -->
+                    </div>
+                </div>
+            </aside>
+
+            <main class="center-panel">
+                <div class="preview-container">
+                    <div class="preview-header">
+                        <span data-i18n="preview">Preview</span>
+                        <div class="preview-info">
+                            <span id="current-resolution">1920x1080</span>
+                            <span>•</span>
+                            <span id="current-fps">60 FPS</span>
+                        </div>
+                    </div>
+                    <div class="preview-area" id="preview-area">
+                        <div class="preview-placeholder" id="preview-placeholder">
+                            <i class="fas fa-video-slash"></i>
+                            <p data-i18n="selectSource">Select source</p>
+                        </div>
+                        <canvas id="preview-canvas" style="display: none;"></canvas>
+                    </div>
+                    <div class="preview-footer">
+                        <div class="resolution-info">
+                            <span id="preview-resolution-display">1920x1080 • 60 FPS</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="right-panel">
+                <div class="panel-section">
+                    <h3><i class="fas fa-cog"></i> <span data-i18n="videoSettings">Video Settings</span></h3>
+                    <div class="video-settings">
+                        <!-- Otomatik Ayarlar Seçeneği -->
+                        <div class="auto-settings-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="auto-settings-toggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span data-i18n="autoSettings">Auto Settings</span>
+                            <div class="tooltip">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="tooltiptext" data-i18n="autoSettingsTooltip">Automatically adjusts settings based on system performance</span>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <label><i class="fas fa-expand-arrows-alt"></i> <span data-i18n="resolution">Resolution</span></label>
+                            <select id="resolution-select" class="settings-select">
+                                <option value="1920x1080">1920x1080 (Full HD)</option>
+                                <option value="1280x720">1280x720 (HD)</option>
+                                <option value="854x480">854x480 (SD)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <label><i class="fas fa-tachometer-alt"></i> <span data-i18n="fps">FPS (Frames/Second)</span></label>
+                            <select id="fps-select" class="settings-select">
+                                <option value="60" data-i18n-option="high">60 FPS (High)</option>
+                                <option value="30" data-i18n-option="medium">30 FPS (Medium)</option>
+                                <option value="24" data-i18n-option="low">24 FPS (Low)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <label><i class="fas fa-film"></i> <span data-i18n="quality">Quality</span></label>
+                            <select id="quality-select" class="settings-select">
+                                <option value="high" data-i18n-option="highQuality">High Quality</option>
+                                <option value="medium" data-i18n-option="mediumQuality">Medium Quality</option>
+                                <option value="low" data-i18n-option="lowQuality">Low Quality</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Codec Seçimi -->
+                        <div class="settings-group">
+                            <label><i class="fas fa-code"></i> <span data-i18n="codec">Codec</span></label>
+                            <select id="codec-select" class="settings-select">
+                                <option value="auto" data-i18n-option="autoCodec">Auto (Recommended)</option>
+                                <option value="h264">H.264 (Fast)</option>
+                                <option value="vp9">VP9 (High Quality)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-info">
+                            <div class="info-card">
+                                <div class="info-header">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span data-i18n="estimatedFileSize">Estimated File Size</span>
+                                </div>
+                                <div class="info-content">
+                                    <span id="estimated-size" data-i18n="sizePerMinute">~50 MB/minute</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-chart-line"></i> <span data-i18n="statistics">Statistics</span></h3>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-label" data-i18n="recordingDuration">Recording Duration:</span>
+                            <span id="recording-time" class="stat-value">00:00:00</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label" data-i18n="fileSize">File Size:</span>
+                            <span id="file-size" class="stat-value">0 MB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label" data-i18n="status">Status:</span>
+                            <span id="recording-status" class="stat-value" data-i18n="ready">Ready</span>
+                        </div>
+                        <!-- FPS Göstergesi -->
+                        <div class="stat-item">
+                            <span class="stat-label" data-i18n="currentFPS">Current FPS:</span>
+                            <span id="fps-display" class="stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="bottom-panel">
+            <div class="control-section">
+                <button id="start-recording-btn" class="control-btn record-btn">
+                    <i class="fas fa-circle"></i>
+                    <span data-i18n="startRecording">Start Recording</span>
+                </button>
+                <button id="stop-recording-btn" class="control-btn stop-btn" disabled>
+                    <i class="fas fa-stop"></i>
+                    <span data-i18n="stop">Stop</span>
+                </button>
+                <!-- Oyun modu butonu JavaScript tarafından otomatik eklenir -->
+            </div>
+            
+            <div class="status-section">
+                <div class="status-item">
+                    <i class="fas fa-clock"></i>
+                    <span id="current-time">00:00:00</span>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Modal - Kaynak Seçimi -->
+        <div id="source-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 data-i18n="selectSource">Select Source</h3>
+                    <button class="close-btn" id="close-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="source-tabs">
+                        <button class="tab-btn active" data-tab="screen">
+                            <i class="fas fa-desktop"></i> <span data-i18n="screen">Screen</span>
+                        </button>
+                        <button class="tab-btn" data-tab="window">
+                            <i class="fas fa-window-maximize"></i> <span data-i18n="window">Window</span>
+                        </button>
+                    </div>
+                    <div id="sources-grid" class="sources-grid"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-source" class="btn-secondary" data-i18n="cancel">Cancel</button>
+                    <button id="confirm-source" class="btn-primary" disabled data-i18n="select">Select</button>
+                </div>
+            </div>
+        </div>
+
+       <!-- Modal - Kayıt Tamamlandı -->
+<div id="save-modal" class="modal">
+    <div class="modal-content save-modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-video"></i> <span data-i18n="recordingCompleted">Recording Completed</span></h3>
+            <button class="close-btn" id="close-save-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="video-preview-container">
+                <div class="custom-video-player">
+                    <video id="save-preview-video" class="preview-video">
+                        <span data-i18n="videoCannotPlay">Video cannot play</span>
+                    </video>
+                    <div class="video-controls">
+                        <div class="control-bar">
+                            <button class="play-pause-btn" id="play-pause-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <div class="time-display">
+                                <span id="current-time-display">00:00</span>
+                                <span>/</span>
+                                <span id="duration-display">00:00</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progress-fill"></div>
+                                    <div class="progress-handle" id="progress-handle"></div>
+                                </div>
+                            </div>
+                            <div class="volume-container">
+                                <button class="volume-btn" id="volume-btn">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                                <div class="volume-slider">
+                                    <input type="range" id="volume-range" min="0" max="100" value="100">
+                                </div>
+                            </div>
+                            <button class="fullscreen-btn" id="fullscreen-btn">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="video-overlay" id="video-overlay">
+                        <div class="play-overlay" id="play-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <div class="info-item">
+                        <i class="fas fa-film"></i>
+                        <span data-i18n="format">Format: MP4</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="video-duration"><span data-i18n="duration">Duration</span>: --:--</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-hdd"></i>
+                        <span id="video-size"><span data-i18n="size">Size</span>: -- MB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="discard-recording" class="btn-secondary">
+                <i class="fas fa-trash"></i> <span data-i18n="delete">Delete</span>
+            </button>
+            <button id="save-recording" class="btn-primary">
+                <i class="fas fa-download"></i> <span data-i18n="saveAsMP4">Save as MP4</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- Dil değiştirme için gerekli script -->
+    <script>
+        // Çeviri objeleri - GÜNCELLENMIŞ MİKROFON ÇEVİRİLERİ
+        const translations = {
+            en: {
+                recording: "RECORDING",
+                sources: "Sources",
+                addSource: "Add Source",
+                microphone: "Microphone",
+                micOff: "Microphone Off",
+                micOn: "Microphone On",
+                off: "Off",
+                on: "On",
+                preview: "Preview",
+                selectSource: "Select source",
+                videoSettings: "Video Settings",
+                resolution: "Resolution",
+                fps: "FPS (Frames/Second)",
+                quality: "Quality",
+                highQuality: "High Quality",
+                mediumQuality: "Medium Quality",
+                lowQuality: "Low Quality",
+                high: "60 FPS (High)",
+                medium: "30 FPS (Medium)",
+                low: "24 FPS (Low)",
+                estimatedFileSize: "Estimated File Size",
+                sizePerMinute: "~50 MB/minute",
+                statistics: "Statistics",
+                recordingDuration: "Recording Duration:",
+                fileSize: "File Size:",
+                status: "Status:",
+                ready: "Ready",
+                startRecording: "Start Recording",
+                stop: "Stop",
+                screen: "Screen",
+                window: "Window",
+                cancel: "Cancel",
+                select: "Select",
+                recordingCompleted: "Recording Completed",
+                videoCannotPlay: "Video cannot play",
+                format: "Format: MP4",
+                duration: "Duration",
+                size: "Size",
+                delete: "Delete",
+                saveAsMP4: "Save as MP4",
+                autoSettings: "Auto Settings",
+                autoSettingsTooltip: "Automatically adjusts settings based on system performance",
+                codec: "Codec",
+                autoCodec: "Auto (Recommended)",
+                currentFPS: "Current FPS:",
+                gameMode: "Game Mode",
+                gameModeEnabled: "Game Mode enabled",
+                gameModeDisabled: "Game Mode disabled",
+                // 🎤 Mikrofon ayarları çevirileri - TAMAMEN GÜNCELLENMIŞ
+                microphoneSettings: "Microphone Settings",
+                selectMicrophone: "Select Microphone",
+                defaultMicrophone: "Default",
+                microphoneGain: "Microphone Volume",
+                noMicrophoneFound: "No microphone found",
+                microphoneSelected: "Microphone selected",
+                apply: "Apply",
+                testMicrophone: "Test Microphone",
+                stopTest: "Stop Test",
+                micAccessDenied: "Microphone access denied",
+                microphoneOn: "Microphone on",
+                microphoneOff: "Microphone off",
+                sourceAdded: "Source added",
+                selectSourceFirst: "Please select a source first",
+                recordingStarted: "Recording started",
+                recordingStopped: "Recording stopped",
+                recordingError: "Recording error",
+                previewError: "Preview could not be started",
+                noRecordingData: "No recording data found",
+                previewCreateError: "Preview could not be created",
+                noVideoToSave: "No video found to save",
+                savingVideo: "Saving as MP4...",
+                videoSaved: "Video saved successfully as MP4",
+                saveError: "Video could not be saved",
+                videoDeleted: "Recording deleted",
+                userCancelled: "User cancelled saving"
+            },
+            tr: {
+                recording: "KAYIT",
+                sources: "Kaynaklar",
+                addSource: "Kaynak Ekle",
+                microphone: "Mikrofon",
+                micOff: "Mikrofon Kapalı",
+                micOn: "Mikrofon Açık",
+                off: "Kapalı",
+                on: "Açık",
+                preview: "Önizleme",
+                selectSource: "Kaynak seçin",
+                videoSettings: "Video Ayarları",
+                resolution: "Çözünürlük",
+                fps: "FPS (Kare/Saniye)",
+                quality: "Kalite",
+                highQuality: "Yüksek Kalite",
+                mediumQuality: "Orta Kalite",
+                lowQuality: "Düşük Kalite",
+                high: "60 FPS (Yüksek)",
+                medium: "30 FPS (Orta)",
+                low: "24 FPS (Düşük)",
+                estimatedFileSize: "Tahmini Dosya Boyutu",
+                sizePerMinute: "~50 MB/dakika",
+                statistics: "İstatistikler",
+                recordingDuration: "Kayıt Süresi:",
+                fileSize: "Dosya Boyutu:",
+                status: "Durum:",
+                ready: "Hazır",
+                startRecording: "Kaydı Başlat",
+                stop: "Durdur",
+                screen: "Ekran",
+                window: "Pencere",
+                cancel: "İptal",
+                select: "Seç",
+                recordingCompleted: "Kayıt Tamamlandı",
+                videoCannotPlay: "Video oynatılamıyor",
+                format: "Format: MP4",
+                duration: "Süre",
+                size: "Boyut",
+                delete: "Sil",
+                saveAsMP4: "MP4 Olarak Kaydet",
+                autoSettings: "Otomatik Ayarlar",
+                autoSettingsTooltip: "Sistem performansına göre ayarları otomatik olarak düzenler",
+                codec: "Codec",
+                autoCodec: "Otomatik (Önerilen)",
+                currentFPS: "Mevcut FPS:",
+                gameMode: "Oyun Modu",
+                gameModeEnabled: "Oyun Modu etkinleştirildi",
+                gameModeDisabled: "Oyun Modu kapatıldı",
+                // 🎤 Mikrofon ayarları çevirileri - TAMAMEN GÜNCELLENMIŞ
+                microphoneSettings: "Mikrofon Ayarları",
+                selectMicrophone: "Mikrofon Seç",
+                defaultMicrophone: "Varsayılan",
+                microphoneGain: "Mikrofon Ses Seviyesi",
+                noMicrophoneFound: "Mikrofon bulunamadı",
+                microphoneSelected: "Mikrofon seçildi",
+                apply: "Uygula",
+                testMicrophone: "Mikrofonu Test Et",
+                stopTest: "Testi Durdur",
+                micAccessDenied: "Mikrofon erişimi reddedildi",
+                microphoneOn: "Mikrofon açıldı",
+                microphoneOff: "Mikrofon kapatıldı",
+                sourceAdded: "Kaynak eklendi",
+                selectSourceFirst: "Lütfen önce bir kaynak seçin",
+                recordingStarted: "Kayıt başlatıldı",
+                recordingStopped: "Kayıt durduruldu",
+                recordingError: "Kayıt hatası",
+                previewError: "Önizleme başlatılamadı",
+                noRecordingData: "Kayıt verisi bulunamadı",
+                previewCreateError: "Önizleme oluşturulamadı",
+                noVideoToSave: "Kaydedilecek video bulunamadı",
+                savingVideo: "MP4 Olarak Kaydediliyor...",
+                videoSaved: "Video başarıyla MP4 olarak kaydedildi",
+                saveError: "Video kaydedilemedi",
+                videoDeleted: "Kayıt silindi",
+                userCancelled: "Kullanıcı kaydetmeyi iptal etti"
+            }
+        };
+
+        // Mevcut dil - ilk açılışta kontrol et
+        let currentLanguage = localStorage.getItem('selectedLanguage');
+        
+        // Eğer daha önce dil seçilmemişse varsayılan olarak İngilizce
+        if (!currentLanguage) {
+            currentLanguage = 'en';
+            // İlk açılış olduğunu işaretle (localStorage'da dil yok)
+            console.log('First launch - setting default language to English');
+        }
+
+        // Dil değiştirme fonksiyonu
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            // Kullanıcı dil değiştirdiğinde kaydet
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Tüm çevirilebilir elementleri güncelle
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Select option'ları için özel işlem
+            document.querySelectorAll('[data-i18n-option]').forEach(option => {
+                const key = option.getAttribute('data-i18n-option');
+                if (translations[lang][key]) {
+                    option.textContent = translations[lang][key];
+                }
+            });
+            
+            // Dil butonunu güncelle
+            document.getElementById('current-lang').textContent = lang.toUpperCase();
+            
+            // Dil değiştiğinde konsola log at
+            console.log(`Language changed to: ${lang}`);
+            
+            // Dil değişikliği event'ini tetikle
+            window.dispatchEvent(new CustomEvent('languageChanged', {
+                detail: { language: lang }
+            }));
+        }
+
+        // Dil seçici event listener'ları
+        document.addEventListener('DOMContentLoaded', function() {
+            const langBtn = document.getElementById('lang-btn');
+            const langDropdown = document.getElementById('lang-dropdown');
+            
+            // İlk yüklemede dili ayarla
+            changeLanguage(currentLanguage);
+            
+            // Dil butonuna tıklama
+            langBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                langDropdown.classList.toggle('show');
+            });
+            
+            // Dil seçeneklerine tıklama
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                    langDropdown.classList.remove('show');
+                });
+            });
+            
+            // Dışarı tıklandığında dropdown'u kapat
+            document.addEventListener('click', function() {
+                langDropdown.classList.remove('show');
+            });
+            
+            // Otomatik ayarlar toggle
+            const autoSettingsToggle = document.getElementById('auto-settings-toggle');
+            autoSettingsToggle.addEventListener('change', function() {
+                const settingsSelects = document.querySelectorAll('.settings-select');
+                
+                if (this.checked) {
+                    // Otomatik ayarlar açık - select'leri devre dışı bırak
+                    settingsSelects.forEach(select => {
+                        select.disabled = true;
+                        select.classList.add('disabled');
+                    });
+                    
+                    // Otomatik ayarları uygula
+                    applyAutoSettings();
+                } else {
+                    // Otomatik ayarlar kapalı - select'leri etkinleştir
+                    settingsSelects.forEach(select => {
+                        select.disabled = false;
+                        select.classList.remove('disabled');
+                    });
+                }
+            });
+            
+            // Otomatik ayarları uygulama fonksiyonu
+            function applyAutoSettings() {
+                // Sistem özelliklerini kontrol et ve en uygun ayarları belirle
+                detectOptimalSettings().then(settings => {
+                    // Ayarları uygula
+                    document.getElementById('resolution-select').value = settings.resolution;
+                    document.getElementById('fps-select').value = settings.fps;
+                    document.getElementById('quality-select').value = settings.quality;
+                    document.getElementById('codec-select').value = settings.codec;
+                    
+                    // Ayarları güncelle
+                    if (window.screenRecorder) {
+                        window.screenRecorder.updateResolution(settings.resolution);
+                        window.screenRecorder.updateFPS(settings.fps);
+                        window.screenRecorder.updateQuality(settings.quality);
+                        if (window.screenRecorder.updateCodec) {
+                            window.screenRecorder.updateCodec(settings.codec);
+                        }
+                    }
+                });
+            }
+            
+            // Optimal ayarları tespit et
+            async function detectOptimalSettings() {
+                // Burada gerçek bir sistem analizi yapılabilir
+                // Şimdilik basit bir örnek:
+                
+                // CPU ve GPU bilgilerini al (gerçek uygulamada Electron API kullanılabilir)
+                const hardwareConcurrency = navigator.hardwareConcurrency || 4;
+                const isHighEndDevice = hardwareConcurrency >= 8;
+                
+                // Tarayıcı/sistem performansını kontrol et
+                const performanceScore = await checkPerformance();
+                
+                // Ayarları belirle
+                let settings = {
+                    resolution: '1280x720',
+                    fps: '30',
+                    quality: 'medium',
+                    codec: 'h264'
+                };
+                
+                if (isHighEndDevice && performanceScore > 80) {
+                    // Yüksek performanslı sistem
+                    settings = {
+                        resolution: '1920x1080',
+                        fps: '60',
+                        quality: 'high',
+                        codec: 'h264'
+                    };
+                } else if (performanceScore < 40) {
+                    // Düşük performanslı sistem
+                    settings = {
+                        resolution: '854x480',
+                        fps: '24',
+                        quality: 'low',
+                        codec: 'h264'
+                    };
+                }
+                
+                return settings;
+            }
+            
+            // Performans kontrolü
+            async function checkPerformance() {
+                return new Promise(resolve => {
+                    // Basit bir performans testi
+                    const startTime = performance.now();
+                    let counter = 0;
+                    
+                    // Yoğun bir işlem yap
+                    for (let i = 0; i < 1000000; i++) {
+                        counter += Math.sqrt(i);
+                    }
+                    
+                    const endTime = performance.now();
+                    const duration = endTime - startTime;
+                    
+                    // Performans puanı hesapla (düşük süre = yüksek puan)
+                    const maxDuration = 1000; // 1 saniye
+                    const score = Math.max(0, Math.min(100, 100 - (duration / maxDuration * 100)));
+                    
+                    resolve(score);
+                });
+            }
+        });
+    </script>
+
+    <!-- CSS için gerekli stiller (styles.css'e eklenecek) -->
+    <style>
+         .language-selector {
+        position: relative;
+        margin-right: 20px;
+    }
+
+    .lang-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .lang-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .lang-btn i:last-child {
+        font-size: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .lang-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 8px;
+        background: #2a2d3a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .lang-dropdown.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .lang-dropdown.show ~ .lang-btn i:last-child {
+        transform: rotate(180deg);
+    }
+
+    .lang-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        background: transparent;
+        border: none;
+        color: #e0e0e0;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        transition: all 0.2s ease;
+        font-size: 14px;
+    }
+
+    .lang-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .lang-option img {
+        width: 24px;
+        height: 18px;
+        object-fit: cover;
+        border-radius: 2px;
+    }
+    
+    /* Otomatik Ayarlar Toggle */
+    .auto-settings-toggle {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+        margin-right: 12px;
+    }
+    
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #3a3f52;
+        transition: .4s;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+    }
+    
+    input:checked + .slider {
+        background-color: #ff8c00;
+    }
+    
+    input:focus + .slider {
+        box-shadow: 0 0 1px #ff8c00;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+    
+    .slider.round {
+        border-radius: 24px;
+    }
+    
+    .slider.round:before {
+        border-radius: 50%;
+    }
+    
+    /* Tooltip */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        margin-left: 8px;
+        color: #b9bbbe;
+    }
+    
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: #3a3f52;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #3a3f52 transparent transparent transparent;
+    }
+    
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    /* Devre dışı bırakılmış select */
+    .settings-select.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    /* FPS Göstergesi */
+    #fps-display {
+        font-weight: bold;
+        color: #ff8c00;
+    }
+    
+    /* Codec seçimi */
+    #codec-select {
+        font-family: monospace;
+    }
+</style>
+
+    </style>
+    
+    <script src="renderer.js"></script>
+</body>
+</html>
